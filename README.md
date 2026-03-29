@@ -84,6 +84,6 @@ mvn spring-boot:run
 
 ## 注意事项
 
-- 默认管理员账号：admin/admin123
+- 默认管理员账号：admin/123123
 - 首次运行前请确保数据库已正确配置
 - 开发环境下，前端运行在http://localhost:3000，后端运行在http://localhost:8080
