@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testTeacherCourses()">Test Teacher Courses</button>
+    <button onclick="testTeacherNotifications()">Test Teacher Notifications</button>
+    <div id="result"></div>
+
+    <script>
+        axios.defaults.baseURL = '/api';
+        
+        function logResult(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+
+        async function testLogin() {
+            logResult('Testing login API...');
+            try {
+                const response = await axios.post('/auth/login', {
+                    username: 'admin',
+                    password: 'admin123',
+                    role: 'ADMIN'
+                });
+                logResult('Login response: ' + JSON.stringify(response.data));
+                if (response.data.success) {
+                    localStorage.setItem('token', response.data.data.token);
+                    logResult('Token saved: ' + response.data.data.token);
+                }
+            } catch (error) {
+                logResult('Login error: ' + error.message);
+            }
+        }
+
+        async function testTeacherCourses() {
+            logResult('Testing teacher courses API...');
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    logResult('No token found, please login first');
+                    return;
+                }
+                
+                const response = await axios.get('/teacher/data/courses', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                logResult('Teacher courses response: ' + JSON.stringify(response.data));
+            } catch (error) {
+                logResult('Teacher courses error: ' + error.message);
+            }
+        }
+
+        async function testTeacherNotifications() {
+            logResult('Testing teacher notifications API...');
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    logResult('No token found, please login first');
+                    return;
+                }
+                
+                const response = await axios.get('/teacher/notifications', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                logResult('Teacher notifications response: ' + JSON.stringify(response.data));
+            } catch (error) {
+                logResult('Teacher notifications error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
